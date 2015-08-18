@@ -56,7 +56,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ParserTest );
 
 void ParserTest::KeyValuePairs()
 {
-   AParser p("testdata.txt");
+   AParser p("testdata/testdata.txt");
 
    const string key = "key";
    const string value = "value";
@@ -92,7 +92,7 @@ void ParserTest::KeyValuePairs()
 
 void ParserTest::ParseSectionNames()
 {
-   AParser p("testdata.txt");
+   AParser p("testdata/testdata.txt");
    const string expected = "Section demonstration";
 
    CPPUNIT_ASSERT_EQUAL(expected, p.SectionName("[Section demonstration]"));
@@ -117,14 +117,14 @@ void ParserTest::ParseSectionNames()
 
 void ParserTest::DuplicateKeys()
 {
-   AParser p("dupekeys.txt");
+   AParser p("testdata/dupekeys.txt");
    CPPUNIT_ASSERT_EQUAL((int) AParser::kErrorDuplicateKey, p.Parse() );
    CPPUNIT_ASSERT_EQUAL( 0, p.NumSections() );
 }
 
 void ParserTest::DuplicateSections()
 {
-   AParser p("dupesecs.txt");
+   AParser p("testdata/dupesecs.txt");
    CPPUNIT_ASSERT_EQUAL((int) AParser::kErrorDuplicateSection, p.Parse() );
    CPPUNIT_ASSERT_EQUAL( 0, p.NumSections() );
 
@@ -142,14 +142,14 @@ void ParserTest::OpenABogusFile()
 
 void ParserTest::OpenValidFile()
 {
-   AParser p("testdata.txt");
+   AParser p("testdata/testdata.txt");
    CPPUNIT_ASSERT_EQUAL( (int) AParser::kErrorSuccess, p.Parse());
 }
 
 
 void ParserTest::FirstNonBlankStartsSection()
 {
-   AParser p("nosec.txt");
+   AParser p("testdata/nosec.txt");
    CPPUNIT_ASSERT_EQUAL( (int) AParser::kErrorDoesntStartWithSection, p.Parse());
 
    // even though invalid, can we cause any trouble
@@ -157,13 +157,13 @@ void ParserTest::FirstNonBlankStartsSection()
    CPPUNIT_ASSERT_EQUAL( 0, p.GetInt("header", "accessed"));
 
 
-   AParser p2("simplesec.txt");
+   AParser p2("testdata/simplesec.txt");
    CPPUNIT_ASSERT_EQUAL( (int) AParser::kErrorSuccess, p2.Parse());
 }
 
 void ParserTest::GetString()
 {
-   AParser p("testdata.txt");
+   AParser p("testdata/testdata.txt");
    p.Parse();
 
    CPPUNIT_ASSERT_EQUAL( 3, p.NumSections() );
@@ -183,7 +183,7 @@ void ParserTest::GetString()
 
 void ParserTest::GetInt()
 {
-   AParser p("testdata.txt");
+   AParser p("testdata/testdata.txt");
    p.Parse();
 
    int expected = 205;
@@ -192,7 +192,7 @@ void ParserTest::GetInt()
 
 void ParserTest::GetFloat()
 {
-   AParser p("testdata.txt");
+   AParser p("testdata/testdata.txt");
    p.Parse();
 
    float expected = 4.5;
@@ -202,9 +202,9 @@ void ParserTest::GetFloat()
 void ParserTest::SetString()
 {
    // copy to a temp file for testing
-   CopyFile("testdata.txt","temp1.txt");
+   CopyFile("testdata/testdata.txt","/tmp/temp1.txt");
 
-   AParser p("temp1.txt");
+   AParser p("/tmp/temp1.txt");
    p.Parse();
 
    CPPUNIT_ASSERT_EQUAL( 3, p.NumSections() );
@@ -217,7 +217,7 @@ void ParserTest::SetString()
    CPPUNIT_ASSERT_EQUAL( expected, p.GetString("trailer", "budget"));
 
    // make a new parser to verify disk has the new stuff.
-   AParser p2("temp1.txt");
+   AParser p2("/tmp/temp1.txt");
    p2.Parse();
    CPPUNIT_ASSERT_EQUAL( expected, p2.GetString("trailer", "budget"));
 
@@ -227,9 +227,9 @@ void ParserTest::SetString()
 void ParserTest::SetFloat()
 {
    // copy to a temp file for testing
-   CopyFile("testdata.txt","temp1.txt");
+   CopyFile("testdata/testdata.txt","/tmp/temp1.txt");
 
-   AParser p("temp1.txt");
+   AParser p("/tmp/temp1.txt");
 
    p.Parse();
 
@@ -241,17 +241,17 @@ void ParserTest::SetFloat()
    CPPUNIT_ASSERT_EQUAL( f, p.GetFloat("header", "budget"));
 
    // make a new parser to verify disk has the new stuff.
-   AParser p2("temp1.txt");
+   AParser p2("/tmp/temp1.txt");
    p2.Parse();
    CPPUNIT_ASSERT_EQUAL( f, p2.GetFloat("header", "budget"));
 
-   unlink ("temp1.txt");
+   unlink ("/tmp/temp1.txt");
 }
 
 void ParserTest::SetInt()
 {
    // copy to a temp file for testing
-   CopyFile("testdata.txt","temp2.txt" );
+   CopyFile("testdata/testdata.txt","temp2.txt" );
 
    AParser p("temp2.txt");
 
@@ -274,7 +274,7 @@ void ParserTest::SetInt()
 
 void ParserTest::SectionStartsWithoutHeader()
 {
-   AParser p("sansheader.txt");
+   AParser p("testdata/sansheader.txt");
    CPPUNIT_ASSERT_EQUAL( (int) AParser::kErrorDoesntStartWithSection, p.Parse());
    CPPUNIT_ASSERT_EQUAL(0, p.NumSections());
 
