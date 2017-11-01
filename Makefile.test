@@ -26,7 +26,7 @@ clean :
 	rm aal $(objects) 
 
 
-        test: aal TAGS
+test: aal TAGS
 	export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}; ./aal test	
 
 TAGS:	${TAGS}   
