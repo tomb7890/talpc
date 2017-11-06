@@ -1,21 +1,29 @@
-# note: this make file just builds the objects; to make
-# use of your installed CppUnit, use Makefile.test and
-# set the CPPROOT path.
+LIBS=-lcppunit -ldl
+CPPINCLUDES=-I${CPPROOT}/include
+LIBDIR=${CPPINCLUDES} -L${CPPROOT}/src/cppunit/.libs
+objects = main.o \
+ FixedPoint.o \
+ FixedPointTest.o \
+ Parser.o \
+ ParserTest.o \
 
-
-objects = Parser.o FixedPoint.o main.o
-CXXFLAGS= -g ${CPPINCLUDES}
+CXXFLAGS= -g ${CPPINCLUDES} -DCPPTESTING
 TAGS=$(shell ls *.cpp)
-LIBS=cppunit
+
+test: aal TAGS
+	./aal test	
 
 aal : $(objects)
-	g++  $(objects) -g -o aal -DDEBUG -l ${LIBS} ${LIBDIR}
-main.o:
+	g++  $(objects) -g -o aal -DDEBUG ${LIBS} ${LIBDIR}
+
+main.o:	
 
 .PHONY : clean
 clean :
-	rm aal $(objects)
+	rm aal $(objects) 
 
-TAGS:	${TAGS}
+
+
+TAGS:	${TAGS}   
 	echo "making tags..."
 	etags ${TAGS}
