@@ -8,7 +8,7 @@ objects = main.o \
  ParserTest.o \
 
 
-CXXFLAGS= -g ${CPPINCLUDES} -DCPPTESTING --std=c++11
+CXXFLAGS= -g ${CPPINCLUDES} -DCPPTESTING --std=c++11  -Wall
 TAGS=$(shell ls *.cpp)
 
 test: aal TAGS
