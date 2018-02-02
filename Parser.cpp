@@ -211,12 +211,12 @@ void AParser::Erase()
    this->fSections.erase(fSections.begin(), fSections.end());
 }
 
-const bool AParser::GetLine(ifstream& ifs, string& buffer) const
+void AParser::GetLine(ifstream& ifs, string& buffer) const
 {
    string temp;
-   bool b = std::getline(ifs, temp);
+   std::getline(ifs, temp);
 
-   if ( b )
+   if ( temp.size() > 0  )
    {
       if ( '\r' == temp[temp.size() - 1] )
       {
@@ -227,7 +227,6 @@ const bool AParser::GetLine(ifstream& ifs, string& buffer) const
          buffer = temp;
       }
    }
-   return b;
 }
 
 const int AParser::Parse()
@@ -242,8 +241,10 @@ const int AParser::Parse()
    ASection* pSec = NULL;
 
    string buf;
-   while ( this->GetLine( ifs, buf ))
+   while ( ! ifs.eof ())
    {
+
+     this->GetLine( ifs, buf );
       if ( kEmpty != this->SectionName( buf ))
       {
          fSections.Store( pSec );

@@ -7,21 +7,21 @@ objects = main.o \
  Parser.o \
  ParserTest.o \
 
-CXXFLAGS= -g ${CPPINCLUDES} -DCPPTESTING
+
+CXXFLAGS= -g ${CPPINCLUDES} -DCPPTESTING --std=c++11
 TAGS=$(shell ls *.cpp)
 
 test: aal TAGS
 	./aal test	
 
 aal : $(objects)
-	g++  $(objects) -g -o aal -DDEBUG ${LIBS} ${LIBDIR}
+	g++  $(objects) -g -o aal -DDEBUG ${LIBS} ${LIBDIR} 
 
 main.o:	
 
 .PHONY : clean
 clean :
 	rm aal $(objects) 
-
 
 
 TAGS:	${TAGS}   

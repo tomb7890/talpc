@@ -53,7 +53,7 @@ public:
 
 private:
 
-   const bool GetLine(ifstream&, string& ) const;
+   void  GetLine(ifstream&, string& ) const;
    void Save();
    void Erase();
 
