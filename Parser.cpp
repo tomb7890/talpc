@@ -93,27 +93,27 @@ const string AParser::SectionName(const string& buf) const
       int len = end - start;
       retvalue = buf.substr(start, len);
    }
+
+   return retvalue;
 }
 
 const string AParser::GetString(const string& sec, const string& key ) const
 {
-   for (int i=0; i<fSections.size(); ++i )
-   {
-      if ( sec == fSections[i].name )
-      {
-         const ASection& section = fSections[i];
-
-         for ( int j=0; j < section.size(); ++j )
-         {
-            const APair &p = section[j];
-            if ( key == p.fKey )
+    for (auto& s: fSections)
+    {
+        if ( s.name == sec ) 
+        {
+            for (auto& p: s) 
             {
-               return p.fValue;
+
+                if ( key == p.fKey )
+                {
+                    return p.fValue;
+                }
             }
-         }
-      }
-   }
-   return kEmpty;
+        }
+    }
+    return kEmpty;
 }
 
 const float AParser::GetFloat(const string& sec, const string& key ) const
@@ -146,24 +146,22 @@ const int AParser::GetInt( const string& sec, const string& key ) const
 
 void AParser::SetString( const string& sec, const string& key, const string& value )
 {
-   for (int i=0; i<fSections.size(); ++i )
-   {
-      if ( sec == fSections[i].name )
-      {
-         ASection& section = fSections[i];
-
-         for ( int j=0; j < section.size(); ++j )
-         {
-            APair &p = section[j];
-            if ( key == p.fKey )
+    for (auto& s: fSections)
+    {
+        if ( s.name == sec ) 
+        {
+            for (auto& p: s) 
             {
-               p.fValue = value;
+                if ( key == p.fKey )
+                {
+                    p.fValue = value;
+                    this->Save();
+                }
             }
-         }
-      }
-   }
-   this->Save();
+        }
+    }
 }
+
 
 void AParser::SetFloat( const string& sec, const string& key, const float value )
 {
@@ -183,27 +181,26 @@ void AParser::SetInt( const string& sec, const string& key, const int value )
 
 void AParser::Save()
 {
-   if ( !fSections.empty())
-   {
-      ofstream ofs(fFileName.c_str(), ios::out);
+    if ( !fSections.empty())
+    {
+        ofstream ofs(fFileName.c_str(), ios::out);
 
-      for (int i=0; i<fSections.size(); ++i )
-      {
-         ASection& section = fSections[i];
-         ofs << kOpenSection << section.name << kCloseSection << kTerminator;
-         {
-            for ( int j=0; j < fSections[i].size(); ++j )
+        for (auto& section: fSections)
+        {
+
+            ofs << kOpenSection << section.name << kCloseSection << kTerminator;
             {
-               APair &p = section[j];
-               ofs << p.fKey << kDelimiter << p.fValue << kTerminator;
+                for (auto& p: section ) 
+                {
+                    ofs << p.fKey << kDelimiter << p.fValue << kTerminator;
+                }
             }
-         }
-         ofs << kTerminator;
-      }
+            ofs << kTerminator;
+        }
 
-      ofs.flush();
-      ofs.close();
-   }
+        ofs.flush();
+        ofs.close();
+    }
 }
 
 void AParser::Erase()
@@ -213,20 +210,20 @@ void AParser::Erase()
 
 void AParser::GetLine(ifstream& ifs, string& buffer) const
 {
-   string temp;
-   std::getline(ifs, temp);
+    string temp;
+    std::getline(ifs, temp);
 
-   if ( temp.size() > 0  )
-   {
-      if ( '\r' == temp[temp.size() - 1] )
-      {
-         buffer = temp.substr(0, temp.size() - 1 );
-      }
-      else
-      {
-         buffer = temp;
-      }
-   }
+    if ( temp.size() > 0 ) { 
+     
+        if ( '\r' == temp[temp.size() - 1] )
+        {
+            buffer = temp.substr(0, temp.size() - 1 );
+        }
+        else
+        {
+            buffer = temp;
+        }
+    }
 }
 
 const int AParser::Parse()
@@ -241,17 +238,17 @@ const int AParser::Parse()
    ASection* pSec = NULL;
 
    string buf;
-   while ( ! ifs.eof ())
+   while ( !( ifs.eof()))
    {
-
-     this->GetLine( ifs, buf );
+     this->GetLine(ifs, buf);
+     
       if ( kEmpty != this->SectionName( buf ))
       {
          fSections.Store( pSec );
 
-         for (int i=0; i<fSections.size(); ++i )
+         for (auto& section: fSections)
          {
-            if ( this->SectionName( buf ) == fSections[i].name )
+           if (this->SectionName(buf) == section.name )
             {
                this->Erase();
                return kErrorDuplicateSection;
@@ -270,9 +267,9 @@ const int AParser::Parse()
          }
 
          ASection& section = *pSec;
-         for (int i=0; i < section.size(); ++i )
+
+         for (auto& pair: section) 
          {
-            APair& pair = section[i];
             if ( this->GetKey(buf) == pair.fKey )
             {
                this->Erase();
