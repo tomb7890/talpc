@@ -101,9 +101,9 @@ const string AParser::GetString(const string& sec, const string& key ) const
 {
     for (auto& s: fSections)
     {
-        if ( s.name == sec ) 
+        if ( s.name == sec )
         {
-            for (auto& p: s) 
+            for (auto& p: s)
             {
 
                 if ( key == p.fKey )
@@ -113,6 +113,7 @@ const string AParser::GetString(const string& sec, const string& key ) const
             }
         }
     }
+
     return kEmpty;
 }
 
@@ -148,9 +149,9 @@ void AParser::SetString( const string& sec, const string& key, const string& val
 {
     for (auto& s: fSections)
     {
-        if ( s.name == sec ) 
+        if ( s.name == sec )
         {
-            for (auto& p: s) 
+            for (auto& p: s)
             {
                 if ( key == p.fKey )
                 {
@@ -190,7 +191,7 @@ void AParser::Save()
 
             ofs << kOpenSection << section.name << kCloseSection << kTerminator;
             {
-                for (auto& p: section ) 
+                for (auto& p: section )
                 {
                     ofs << p.fKey << kDelimiter << p.fValue << kTerminator;
                 }
@@ -213,8 +214,8 @@ void AParser::GetLine(ifstream& ifs, string& buffer) const
     string temp;
     std::getline(ifs, temp);
 
-    if ( temp.size() > 0 ) { 
-     
+    if ( temp.size() > 0 ) {
+
         if ( '\r' == temp[temp.size() - 1] )
         {
             buffer = temp.substr(0, temp.size() - 1 );
@@ -226,95 +227,134 @@ void AParser::GetLine(ifstream& ifs, string& buffer) const
     }
 }
 
-const int AParser::Parse()
-{
-   ifstream ifs(fFileName.c_str(), ios::in);
+const int AParser::Parse() {
+    ifstream ifs;
+    string buf;
+    int linenum = 0;
+    string sectionname;
 
-   if (! ifs )
-   {
-      return kErrorCantOpenFile;
-   }
+    ifs.open(fFileName.c_str(), ios::in);
+    if (ifs.fail())        return kErrorCantOpenFile;
 
-   ASection* pSec = NULL;
-
-   string buf;
-   while ( !( ifs.eof()))
-   {
-     this->GetLine(ifs, buf);
-     
-      if ( kEmpty != this->SectionName( buf ))
-      {
-         fSections.Store( pSec );
-
-         for (auto& section: fSections)
-         {
-           if (this->SectionName(buf) == section.name )
-            {
-               this->Erase();
-               return kErrorDuplicateSection;
+    try {
+        while (! ifs.eof())
+        {
+            this->GetLine(ifs, buf);
+            sectionname = SectionName(buf);
+            if (kEmpty == sectionname ) {
+                handleNonSectionName(linenum, buf) ;
             }
-         }
-
-         pSec = new ASection();
-         pSec->name = this->SectionName( buf );
-
-      }
-      else if ( kEmpty != this->GetKey( buf ))
-      {
-         if ( NULL == pSec && fSections.empty()  )
-         {
-            return kErrorDoesntStartWithSection;
-         }
-
-         ASection& section = *pSec;
-
-         for (auto& pair: section) 
-         {
-            if ( this->GetKey(buf) == pair.fKey )
-            {
-               this->Erase();
-               return kErrorDuplicateKey;
+            else {
+                handleSectionName(sectionname);
             }
-         }
+            linenum++;
+        }
+        storePendingSection();
+    }
 
-         APair pair;
-         pair.fKey =  this->GetKey( buf );
-         pair.fValue =  this->GetValue( buf );
-
-         if ( NULL != pSec )
-         {
-            pSec->push_back( pair );
-         }
-      }
-      else
-      { // continuation
-
-         // if its not a section header and its not a blank line, its an error.
-         if ( kEmpty != buf  && fSections.empty() )
-         {
-            return kErrorDoesntStartWithSection;
-         }
-
-         if ( ' ' == buf[0] )
-         {
-            if ( NULL != pSec )
-            {
-               ASection& section = *pSec;
-               APair& pair = section[ section.size() - 1 ];
-               pair.fValue = pair.fValue + buf;
-            }
-         }
-      }
-   }
-
-   fSections.Store( pSec );
-   return kErrorSuccess;
+    catch (kErrors e) {
+        return e;
+    }
+    return kErrorSuccess;
 }
+
+const bool AParser::alreadySeen(string& newKey) const {
+    for (auto p: tempPairs ) {
+        if ( p.fKey == newKey ) {
+            return true;
+        }
+    }
+    return false;
+}
+const int AParser::handleSectionName (string& sectionname ) {
+    if ( sectionname == prevSectionName ) {
+        throw AParser::kErrorDuplicateSection;
+
+    }
+
+    for (auto& s: AParser::fSections)
+    {
+        if ( s.name == sectionname ) {
+            throw kErrorDuplicateSection;
+        }
+    }
+
+    storePendingSection();
+    prevSectionName = sectionname;
+
+    return kErrorSuccess;
+}
+
+
+void AParser::clearAllSection()
+{
+    fSections.clear();
+}
+
+const int AParser::handleNonSectionName(int linenum, string& buf){
+
+    if ( 0 == linenum ) {
+        throw kErrorDoesntStartWithSection;
+    }
+
+    string newKey = GetKey(buf);
+    string newVal = GetValue(buf);
+
+    if ( newKey.size() > 0 ) {
+        if ( alreadySeen(newKey))
+        {
+            clearAllSection();
+            throw kErrorDuplicateKey;
+        }
+
+        if ( newVal.size() > 0 ) {
+            APair newpair;
+            newpair.fKey = newKey;
+            newpair.fValue = newVal;
+            tempPairs.push_back(newpair);
+        }
+    }
+    else {
+
+        handlePossibleContinuationLine(buf);
+    }
+    return kErrorSuccess;
+}
+
+void AParser::handlePossibleContinuationLine(string& buf)
+{
+    if ( buf.size() > 1 )
+        if (buf[0] == ' ' )
+            if ( tempPairs.size() > 0 )
+            {
+                APair& p = tempPairs.back();
+                p.fValue = p.fValue + buf;
+            }
+
+}
+
+
+
+
+void
+AParser::storePendingSection ()
+{
+    if ( prevSectionName.size() > 0 ) {
+        ASection section;
+        section.name = prevSectionName;
+        for (auto p: tempPairs ) {
+            section.push_back(p);
+        }
+        fSections.push_back(section);
+        tempPairs.clear();
+    }
+}
+
 
 void
 AParser::ASectionVector::Store( ASection* pSec )
 {
-   if ( NULL != pSec )
+    if ( NULL != pSec )
    {
       this->push_back( *pSec );
 

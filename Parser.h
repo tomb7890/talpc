@@ -30,6 +30,20 @@ private:
       void Store(ASection* section);
    };
 
+
+    const int handleNonSectionName(int linenum, string& buf);
+    const int handleSectionName(string& );
+    void handlePossibleContinuationLine(string& buf) ;
+    void storePendingSection();
+    const bool alreadySeen(string& ) const ;
+    void clearAllSection();
+
+    vector<APair> tempPairs;
+    string prevSectionName;
+
+
+
+
 public:
 
    AParser(string s);
@@ -58,7 +72,7 @@ private:
    void Erase();
 
 public:
-   enum { kErrorSuccess = 0,
+   enum kErrors { kErrorSuccess = 0,
           kErrorCantOpenFile,
           kErrorDuplicateSection,
           kErrorDuplicateKey,
