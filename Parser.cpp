@@ -291,14 +291,14 @@ void AParser::clearAllSection()
     fSections.clear();
 }
 
-const int AParser::handleNonSectionName(int linenum, string& buf){
+const int AParser::handleNonSectionName(int linenum, string& line){
 
     if ( 0 == linenum ) {
         throw kErrorDoesntStartWithSection;
     }
 
-    string newKey = GetKey(buf);
-    string newVal = GetValue(buf);
+    string newKey = GetKey(line);
+    string newVal = GetValue(line);
 
     if ( newKey.size() > 0 ) {
         if ( alreadySeen(newKey))
@@ -316,7 +316,7 @@ const int AParser::handleNonSectionName(int linenum, string& buf){
     }
     else {
 
-        handlePossibleContinuationLine(buf);
+        handlePossibleContinuationLine(line);
     }
     return kErrorSuccess;
 }
