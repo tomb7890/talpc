@@ -209,27 +209,27 @@ void AParser::Erase()
    this->fSections.erase(fSections.begin(), fSections.end());
 }
 
-void AParser::GetLine(ifstream& ifs, string& buffer) const
+void AParser::GetLine(ifstream& ifs, string& line) const
 {
-    string temp;
-    std::getline(ifs, temp);
+    string buffer;
+    std::getline(ifs, buffer);
 
-    if ( temp.size() > 0 ) {
+    if ( buffer.size() > 0 ) {
 
-        if ( '\r' == temp[temp.size() - 1] )
+        if ( '\r' == buffer[buffer.size() - 1] )
         {
-            buffer = temp.substr(0, temp.size() - 1 );
+            line = buffer.substr(0, buffer.size() - 1 );
         }
         else
         {
-            buffer = temp;
+            line = buffer;
         }
     }
 }
 
 const int AParser::Parse() {
     ifstream ifs;
-    string buf;
+    string line;
     int linenum = 0;
     string sectionname;
 
@@ -239,10 +239,10 @@ const int AParser::Parse() {
     try {
         while (! ifs.eof())
         {
-            this->GetLine(ifs, buf);
-            sectionname = SectionName(buf);
+            this->GetLine(ifs, line);
+            sectionname = SectionName(line);
             if (kEmpty == sectionname ) {
-                handleNonSectionName(linenum, buf) ;
+                handleNonSectionName(linenum, line) ;
             }
             else {
                 handleSectionName(sectionname);
