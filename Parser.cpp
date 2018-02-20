@@ -214,17 +214,17 @@ void AParser::GetLine(ifstream& ifs, string& line) const
     string buffer;
     std::getline(ifs, buffer);
 
-    if ( buffer.size() > 0 ) {
 
-        if ( '\r' == buffer[buffer.size() - 1] )
-        {
-            line = buffer.substr(0, buffer.size() - 1 );
-        }
-        else
-        {
-            line = buffer;
-        }
+
+    if ( '\r' == buffer[buffer.size() - 1] )
+    {
+        line = buffer.substr(0, buffer.size() - 1 );
     }
+    else
+    {
+        line = buffer;
+    }
+
 }
 
 const int AParser::Parse() {

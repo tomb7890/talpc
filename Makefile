@@ -6,24 +6,25 @@ objects = main.o \
  FixedPointTest.o \
  Parser.o \
  ParserTest.o \
+ ParserTestExtra.o \
 
 
 CXXFLAGS= -g ${CPPINCLUDES} -DCPPTESTING --std=c++11  -Wall
 TAGS=$(shell ls *.cpp)
 
 test: aal TAGS
-	./aal test	
+	./aal test
 
 aal : $(objects)
-	g++  $(objects) -g -o aal -DDEBUG ${LIBS} ${LIBDIR} 
+	g++  $(objects) -g -o aal -DDEBUG ${LIBS} ${LIBDIR}
 
-main.o:	
+main.o:
 
 .PHONY : clean
 clean :
-	rm aal $(objects) 
+	rm aal $(objects)
 
 
-TAGS:	${TAGS}   
+TAGS:	${TAGS}
 	echo "making tags..."
 	etags ${TAGS}
