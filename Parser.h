@@ -9,7 +9,7 @@ using namespace std;
 
 class AParser
 {
-private:
+public:
 
    class APair
    {
@@ -29,6 +29,13 @@ private:
    public:
       void Store(ASection* section);
    };
+
+    ASectionVector&  Sections() { return fSections; }
+
+
+
+private:
+    void Save();
 
 
     const int handleNonSectionName(int linenum, string& buf);
