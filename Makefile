@@ -22,7 +22,7 @@ main.o:
 
 .PHONY : clean
 clean :
-	rm aal $(objects)
+	-rm aal $(objects)
 
 
 TAGS:	${TAGS}
