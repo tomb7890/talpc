@@ -1,3 +1,7 @@
 language: c++
 script: make clean && make && make test
+install:
+  - sudo apt-get update
+  - sudo apt-get install libcppunit-dev 
+
 
