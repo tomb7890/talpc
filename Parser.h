@@ -75,7 +75,6 @@ public:
 private:
 
    void  GetLine(ifstream&, string& ) const;
-   void Save();
    void Erase();
 
 public:
