@@ -1,13 +1,12 @@
-LIBS=-lcppunit -ldl
-CPPINCLUDES=-I${CPPROOT}/include
-LIBDIR=${CPPINCLUDES} -L${CPPROOT}/src/cppunit/.libs
+CPPINCLUDES=-I${CPPROOT}/include -I/usr/local/include/gtest 
+LIBS= -ldl -lpthread -lgtest -lgtest_main
+
 objects = main.o \
  FixedPoint.o \
  FixedPointTest.o \
  Parser.o \
  ParserTest.o \
  ParserTestExtra.o \
-
 
 CXXFLAGS= -g ${CPPINCLUDES} -DCPPTESTING --std=c++11  -Wall
 TAGS=$(shell ls *.cpp)
@@ -16,7 +15,7 @@ test: aal TAGS
 	./aal test
 
 aal : $(objects)
-	g++  $(objects) -g -o aal -DDEBUG ${LIBS} ${LIBDIR}
+	g++  $(objects) -o aal -DDEBUG ${LIBS} ${LIBDIR} -lgtest -lgtest_main -pthread
 
 main.o:
 
