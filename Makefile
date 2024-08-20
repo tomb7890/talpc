@@ -31,3 +31,11 @@ TAGS:	${TAGS}
 
 test-docker:
 	docker run -it --rm -v $$(pwd):/app -w /app kost13/cpp-gtest:latest make 
+
+
+test-docker-hello:
+	docker run -it --rm -v $$(pwd):/app -w /app kost13/cpp-gtest:latest make hello
+
+
+hello:
+	echo "Hello, world"
