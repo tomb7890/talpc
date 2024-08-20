@@ -10,11 +10,10 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest 
     steps:
-      - name: Check out the repo
       - uses: actions/checkout@v3
       - name: Run Tests in Container
         uses: addnab/docker-run-action@v3
         with:
           image: kost13/cpp-gtest:latest
           options: --workdir /app
-          run:  make test 
+          run:  make test
