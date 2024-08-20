@@ -27,3 +27,7 @@ clean :
 TAGS:	${TAGS}
 	echo "making tags..."
 	etags ${TAGS}
+
+
+test-docker:
+	docker run -it --rm -v $$(pwd):/app -w /app kost13/cpp-gtest:latest make 
