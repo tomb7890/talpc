@@ -1,4 +1,4 @@
-CPPINCLUDES=-I${CPPROOT}/include -I/usr/local/include/gtest 
+CPPINCLUDES=-I${CPPROOT}/include 
 LIBS= -ldl -lpthread -lgtest -lgtest_main
 
 objects = main.o \
