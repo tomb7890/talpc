@@ -1,0 +1,19 @@
+name: C++ CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest 
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Tests in Container
+        uses: docker/run-action@v2
+        with:
+          image: kost13/cpp-gtest:latest 
+          options: --workdir /app
+          run: ctest -C Release --output-on-failure
