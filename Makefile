@@ -11,7 +11,7 @@ objects = main.o \
 CXXFLAGS= -g ${CPPINCLUDES} -DCPPTESTING --std=c++11  -Wall
 TAGS=$(shell ls *.cpp)
 
-test: aal TAGS
+test: aal 
 	./aal test
 
 aal : $(objects)
@@ -26,7 +26,7 @@ clean :
 
 TAGS:	${TAGS}
 	echo "making tags..."
-	etags ${TAGS}
+	ctags ${TAGS}
 
 
 test-docker:
