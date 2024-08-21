@@ -16,4 +16,4 @@ jobs:
         with:
           image: kost13/cpp-gtest:latest
           options: --workdir /app
-          run:  make hello
+          run:  make test-docker
