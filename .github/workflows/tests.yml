@@ -1,19 +1,20 @@
-name: C++ CI with Google Test
+name: C++ Tests with Docker
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master ] 
   pull_request:
     branches: [ master ]
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2 
       - name: Run Tests in Container
         uses: addnab/docker-run-action@v3
         with:
-          image: kost13/cpp-gtest:latest
-          options: --workdir /app
-          run:  make test-docker
+          image: kost13/cpp-gtest:latest 
+          options: --workdir /app -v ${{ github.workspace }}:/app
+          run: |
+            make test-docker
