@@ -17,4 +17,4 @@ jobs:
           image: kost13/cpp-gtest:latest 
           options: --workdir /app -v ${{ github.workspace }}:/app
           run: |
-            make test-docker
+            make test
