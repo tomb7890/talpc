@@ -10,7 +10,6 @@ using namespace std;
 class AParser {
 
 public:
-
   // Create a parser object given a file name.
   AParser(string s);
 
@@ -20,23 +19,35 @@ public:
   const string GetKey(const string &) const;
   const string GetValue(const string &) const;
 
+  // Get a string value associated with a given section and key names.
   const string GetString(const string &section, const string &key) const;
+
+  // Get an integer value associated with a given section and key names.
   const int GetInt(const string &section, const string &key) const;
+
+  // Get a floating point value associated with a given section and key names.
   const float GetFloat(const string &section, const string &key) const;
 
+  // Set a string value for a given section and key names, writing the new file
+  // to disk.
   void SetString(const string &section, const string &key,
                  const string &newvalue);
+
+  // Set an integer value for a given section and key names, writing the new
+  // file to disk.
   void SetInt(const string &section, const string &key, const int value);
+
+  // Set a floating point value for a given section and key names, writing the
+  // new file to disk.
   void SetFloat(const string &section, const string &key, const float value);
 
-private:
 
   void GetLine(ifstream &, string &) const;
   void Erase();
 
 public:
   const int Parse();
-    ~AParser();
+  ~AParser();
   class APair {
   public:
     string fKey;
@@ -55,7 +66,7 @@ public:
 
   ASectionVector &Sections() { return fSections; }
   vector<APair> tempPairs;
-  
+
 public:
   enum kErrors {
     kErrorSuccess = 0,
@@ -74,7 +85,6 @@ private:
   void storePendingSection();
   const bool alreadySeen(string &) const;
   void clearAllSection();
-
 
   string prevSectionName;
 
