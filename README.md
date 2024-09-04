@@ -1,13 +1,11 @@
 [![Build Status](https://travis-ci.com/tomb7890/talpc.svg?branch=master)](https://travis-ci.com/tomb7890/talpc) 
+## C++ Coding Projects
 
-
-## C++ Coding Challenges
-
-This repository showcases my solutions to two C++ programming challenges, focusing on data representation, manipulation, and file parsing. 
+This repository showcases my solutions to two C++ programming projects, focusing on data representation, manipulation, and file parsing. 
 
 ### 1. Fixed Point Class
 
-**Challenge:** Implement a C++ class to represent and perform operations on fixed-point numbers using a custom 32-bit encoding.
+**Objective:** Implement a C++ class to represent and perform operations on fixed-point numbers using a custom 32-bit encoding.
 
 **Features:**
 
@@ -16,11 +14,11 @@ This repository showcases my solutions to two C++ programming challenges, focusi
 - Conversion to the nearest floating-point equivalent.
 
 **Implementation Details:** 
-- See comments within `FixedPoint.h` and `FixedPoint.cpp` for detailed explanations of design choices, algorithms, and potential optimizations.
+-  While this initial implementation is functional, I plan to add more detailed comments to `FixedPoint.h` and `FixedPoint.cpp`, explaining the design choices, algorithms, and potential optimizations in the future.
 
 ### 2. Text File Parser
 
-**Challenge:** Develop a C++ class to parse and modify configuration files with a specific section-based format.
+**Objective:** Develop a C++ class to parse and modify configuration files with a specific section-based format.
 
 **Features:**
 
@@ -28,17 +26,14 @@ This repository showcases my solutions to two C++ programming challenges, focusi
 - Retrieval of string, integer, and floating-point values by section and key.
 - Setting and writing new values for specific keys, preserving the original formatting.
 
+**Testing:**
+- Includes a comprehensive suite of unit tests using Google Test to validate functionality and ensure robustness.
+
 **Implementation Details:**
-- Refer to `ConfigParser.h` and `ConfigParser.cpp` for in-depth comments on error handling, parsing logic, and file writing strategies.
+- Refer to `ConfigParser.h` and `ConfigParser.cpp` for insights into the parsing logic and file-writing strategies. I'll be adding more detailed comments in the future to further enhance code understanding.
 
 ###  Future Improvements
 
-- **Unit Tests:** Implement comprehensive unit tests using a framework like Google Test or Catch2 to ensure code correctness and robustness.
 - **Error Handling:** Improve error handling by using exceptions or a custom error reporting mechanism for more informative feedback.
 - **Documentation:** Generate Doxygen documentation to provide a clean and browsable API reference.
 
-###  About Me
-
-[Your Name/Brief Introduction] - I'm passionate about writing clean, efficient, and well-documented C++ code.  
-
----
