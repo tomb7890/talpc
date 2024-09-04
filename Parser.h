@@ -13,12 +13,6 @@ public:
   // Create a parser object given a file name.
   AParser(string s);
 
-  const bool HasSection(const string &) const;
-  const int NumSections() const { return fSections.size(); }
-  const string SectionName(const string &) const;
-  const string GetKey(const string &) const;
-  const string GetValue(const string &) const;
-
   // Get a string value associated with a given section and key names.
   const string GetString(const string &section, const string &key) const;
 
@@ -41,9 +35,14 @@ public:
   // new file to disk.
   void SetFloat(const string &section, const string &key, const float value);
 
-
   void GetLine(ifstream &, string &) const;
   void Erase();
+
+  const bool HasSection(const string &) const;
+  const int NumSections() const { return fSections.size(); }
+  const string SectionName(const string &) const;
+  const string GetKey(const string &) const;
+  const string GetValue(const string &) const;
 
 public:
   const int Parse();
