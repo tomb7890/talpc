@@ -4,20 +4,18 @@
 using namespace std;
 #include <string>
 
-class FixedPoint
-{
+class FixedPoint {
 public:
-   FixedPoint(float);
-   FixedPoint(int);
-   ~FixedPoint();
+  FixedPoint(float);
+  FixedPoint(int);
+  ~FixedPoint();
 
-   int GetValue();
-   float GetFloat();
-   string GetString();
+  int GetValue();
+  float GetFloat();
+  string GetString();
 
 private:
-   int fData;
-
+  int fData;
 };
 
 #endif // h_FixedPoint
