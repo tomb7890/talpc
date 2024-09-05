@@ -66,7 +66,7 @@ public:
 
   ASectionVector &Sections() { return fSections; }
 
-  map<std::string, std::string>  tempPairs;
+  map<std::string, std::string>  tentativeSectionPairs;
 
 public:
   enum kErrors {

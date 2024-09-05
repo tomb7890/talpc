@@ -216,7 +216,7 @@ const int AParser::Parse() {
 }
 
 const bool AParser::alreadySeen(string &newKey) const {
-  if (tempPairs.find(newKey)== tempPairs.end())
+  if (tentativeSectionPairs.find(newKey)== tentativeSectionPairs.end())
     return false;
   return true;
 }
@@ -255,7 +255,7 @@ const int AParser::handleNonSectionName(int linenum, string &line) {
     }
 
     if (newVal.size() > 0) {
-      tempPairs[newKey] = newVal;
+      tentativeSectionPairs[newKey] = newVal;
     }
   } else {
 
@@ -267,25 +267,33 @@ const int AParser::handleNonSectionName(int linenum, string &line) {
 void AParser::handlePossibleContinuationLine(string &buf) {
   if (buf.size() > 1)
     if (buf[0] == ' ')
-      if (tempPairs.size() > 0) {
-        string lastKey = tempPairs.rbegin()->first;
-        string temp = tempPairs[lastKey];
+      if (tentativeSectionPairs.size() > 0) {
+        string lastKey = tentativeSectionPairs.rbegin()->first;
+        string temp = tentativeSectionPairs[lastKey];
         temp += buf;
-        tempPairs[lastKey] = temp;
+        tentativeSectionPairs[lastKey] = temp;
       }
 }
 
 void AParser::storePendingSection() {
   if (prevSectionName.size() > 0) {
+
+    // create a new section 
     ASection section;
+
+    // set the name 
     section.name = prevSectionName;
 
-    for (auto p : tempPairs) {
+    // Populate the section with any gathered data
+    for (auto p : tentativeSectionPairs) {
       section.insert(std::pair<std::string, std::string>(p.first, p.second));
     }
-    
+
+    // Add the new section to the others 
     fSections.push_back(section);
-    tempPairs.clear();
+
+    // Reset the data structure
+    tentativeSectionPairs.clear();
   }
 }
 
