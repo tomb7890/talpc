@@ -8,14 +8,14 @@ objects = main.o \
  ParserTest.o \
  ParserTestExtra.o \
 
-CXXFLAGS= -g ${CPPINCLUDES} -DCPPTESTING --std=c++11  -Wall
+CXXFLAGS= -g ${CPPINCLUDES} -DCPPTESTING --std=c++11  -Wall  
 TAGS=$(shell ls *.cpp)
 
 test: aal 
-	./aal test
+	./aal test --gtest_break_on_failure
 
 aal : $(objects)
-	g++  $(objects) -o aal -DDEBUG ${LIBS} ${LIBDIR} -lgtest -lgtest_main -pthread
+	g++  $(objects)  -o aal -DDEBUG ${LIBS} ${LIBDIR} -lgtest -lgtest_main -pthread 
 
 main.o:
 
