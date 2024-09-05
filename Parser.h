@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <map>
 
 using namespace std;
 
@@ -53,7 +54,7 @@ public:
     string fValue;
   };
 
-  class ASection : public vector<APair> {
+  class ASection : public map<std::string, std::string> {
   public:
     string name;
   };
@@ -64,7 +65,8 @@ public:
   };
 
   ASectionVector &Sections() { return fSections; }
-  vector<APair> tempPairs;
+
+  map<std::string, std::string>  tempPairs;
 
 public:
   enum kErrors {

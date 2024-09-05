@@ -83,12 +83,12 @@ const string AParser::SectionName(const string &buf) const {
 }
 
 const string AParser::GetString(const string &sec, const string &key) const {
-  for (auto &s : fSections) {
-    if (s.name == sec) {
-      for (auto &p : s) {
+  for (auto &section : fSections) {
+    if (section.name == sec) {
+      for (auto &p : section) {
 
-        if (key == p.fKey) {
-          return p.fValue;
+        if (key == p.first) {
+          return p.second;
         }
       }
     }
@@ -126,8 +126,8 @@ void AParser::SetString(const string &sec, const string &key,
   for (auto &s : fSections) {
     if (s.name == sec) {
       for (auto &p : s) {
-        if (key == p.fKey) {
-          p.fValue = value;
+        if (key == p.first) {
+          p.second = value;
           this->Save();
         }
       }
@@ -159,7 +159,7 @@ void AParser::Save() {
       ofs << kOpenSection << section.name << kCloseSection << kTerminator;
       {
         for (auto &p : section) {
-          ofs << p.fKey << kDelimiter << p.fValue << kTerminator;
+          ofs << p.first << kDelimiter << p.second << kTerminator;
         }
       }
       ofs << kTerminator;
@@ -216,12 +216,9 @@ const int AParser::Parse() {
 }
 
 const bool AParser::alreadySeen(string &newKey) const {
-  for (auto p : tempPairs) {
-    if (p.fKey == newKey) {
-      return true;
-    }
-  }
-  return false;
+  if (tempPairs.find(newKey)== tempPairs.end())
+    return false;
+  return true;
 }
 const int AParser::handleSectionName(string &sectionname) {
   if (sectionname == prevSectionName) {
@@ -258,10 +255,7 @@ const int AParser::handleNonSectionName(int linenum, string &line) {
     }
 
     if (newVal.size() > 0) {
-      APair newpair;
-      newpair.fKey = newKey;
-      newpair.fValue = newVal;
-      tempPairs.push_back(newpair);
+      tempPairs[newKey] = newVal;
     }
   } else {
 
@@ -274,8 +268,10 @@ void AParser::handlePossibleContinuationLine(string &buf) {
   if (buf.size() > 1)
     if (buf[0] == ' ')
       if (tempPairs.size() > 0) {
-        APair &p = tempPairs.back();
-        p.fValue = p.fValue + buf;
+        string lastKey = tempPairs.rbegin()->first;
+        string temp = tempPairs[lastKey];
+        temp += buf;
+        tempPairs[lastKey] = temp;
       }
 }
 
@@ -283,9 +279,11 @@ void AParser::storePendingSection() {
   if (prevSectionName.size() > 0) {
     ASection section;
     section.name = prevSectionName;
+
     for (auto p : tempPairs) {
-      section.push_back(p);
+      section.insert(std::pair<std::string, std::string>(p.first, p.second));
     }
+    
     fSections.push_back(section);
     tempPairs.clear();
   }
